@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang= "en">
+    <head>
+        <meta charset = "utf-8">
+        <title>Trip Info</title>
+        <meta name="viewport" content="width-device-width, initial-scale-1">
+        {% load static %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+    <div class="container">
+        <body>
+            <div class= "row">
+                <div class="col-sm-8">
+                    <h1>Hello {{this_user.first_name}}!</h1>
+                </div>
+                <div class="col-sm-2">
+                    <a href="/">Home</a>
+                </div>
+                <div class="col-sm-2">
+                <a href="/logout">Logout</a>
+                </div>
+            </div>
+            <div class="row">
+                <h4>{{this_profile.username}}</h4>
+            </div>
+            <div class="row">
+                <div class="col-sm-10">
+                    <h4>Location: {{this_profile.location.city}}</h4>
+                </div>
+                <div class="col-sm-10">
+                    <h4>Bio: {{this_profile.bio}}</h4>
+                </div>
+                <div class="col-sm-10">
+                    <h4>Books Open:  {{this_profile.books_open}}</h4>
+                </div>
+                <div class="col-sm-10">
+                    <h4>Last Updated: {{this_trip.updated_at}}</h4>
+                </div>
+                <div class="col-sm-10">
+                    <h4>Plan:  {{this_trip.plan}}</h4>
+                </div>
+                <div class="col-sm-10">
+                    <h4>Created By:  {{this_trip.uploaded_by.first_name}}</h4>
+                </div>
+            </div>
+            <div class="mx-auto row">
+                <h5>People who've joined this trip:</h5>
+            </div>
+            <div class="mx-auto row">
+                <div class= "col-sm-8">
+                    <ul>
+                    {% for users in joined_users %}
+                        <li>{{users.first_name}}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </body>
+    </div>
+</html>

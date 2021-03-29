@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang= "en">
+    <head>
+        <meta charset = "utf-8">
+        <title>Create a Profile</title>
+        <meta name="viewport" content="width-device-width, initial-scale-1">
+        {% load static %}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+    <div class="container">
+        <body>
+            <div class="row">
+                {% if messages %}
+                    <div class= "alert alert-danger" role="alert">
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}}> {{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            <div class= "row">
+                <form class = "mx-auto form-group" action='/new/profile/create' method='post'>
+                    <input type= hidden>
+                    {% csrf_token %}
+                    <div class="jumbotron">
+                        <h2> Welcome, {{this_user.first_name}}!</h2>
+                        <h2>Create Your Profile</h2>
+                    </div>
+                    <div class="form-group row">
+                        <div class= "col-sm-4">
+                            <label for="username" class= "col-form-label">Username</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <input class= "form-control" type= "text" name="username" placeholder= "username">
+                        </div>
+                    </div>
+                    <div class= "form-group row">
+                        <div class= "col-sm-4">
+                            <label for="bio" class= "col-form-label">Bio</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <input class= "form-control" type= "text" name="bio" rows= 4 placeholder="bio">
+                        </div>
+                    </div>
+                    <div class= "form-group row">
+                        <div class= "col-sm-4">
+                            <label for="role" class= "col-form-label">Location</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <select name = "location" class= "form-select" aria-label="select city">
+                                <option selected>Select City</option>
+                                {% for location in all_locations %}
+                                <option value="{{location.id}}"> {{ location.city}}, {{location.state}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div> <br>
+                    <div class= "form-group row">
+                        <div class= "col-sm-4">
+                            <label for="role" class= "col-form-label">Books</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <select name = "books" class= "form-select" aria-label="select books">
+                                <option selected>Booking Status</option>
+                                <option>open</option>
+                                <option value="closed">Books are Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class= "form-group row">
+                        <div class= "col-sm-4">
+                            <label for="role" class= "col-form-label">Accepting Walk Ins</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <select name = "walkins" class= "form-select" aria-label="select books">
+                                <option selected>Accepting Walk Ins?</option>
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class= "form-group row">
+                        <div class= "col-sm-4">
+                            <label for="role" class= "col-form-label">Currently Apprenticing</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <select name = "apprentice" class= "form-select" aria-label="select books">
+                                <option selected>Currently Apprenticing?</option>
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class= "form-group row">
+                        <div class= "d-flex justify-content-center">
+                            <input class= "btn btn-primary" type="submit" value="Save and Continue">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </body>
+    </div>
+</html>
