@@ -1,6 +1,33 @@
 from django.db import models
+from django import forms
 from datetime import date, datetime
 import re
+
+class UserManager(models.Manager):
+    def basic_validator(self, postData):
+        errors = {}
+        if len(postData['first_name'])<2:
+            errors["first_name"] = "First name should be at least 2 characters."
+        if len(postData['last_name'])<2:
+            errors["last_name"] = "Last name should be at least 2 characters."
+        if len(postData['password'])<8:
+            errors["email"] = "Password must be at least 8 characters."
+        if (postData['confirmpassword'] != postData['password']):
+            errors["password"] = "Passwords must match!"
+        if postData['birth_date'] == '':
+            errors["birth_date"] = "You must enter a birth date."
+        if postData['role'] == 'Select Role':
+            errors["role"] = "You must select a role."
+        
+        user = Users.objects.filter(email=postData['email'])
+        if user:
+            errors["email"] = "Email is already registered. Login with email and password."
+
+        EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+        if not EMAIL_REGEX.match(postData['email']):
+            errors["email"] = "Must include a valid email."
+        
+        return errors
 
 class Roles(models.Model):
     role = models.CharField(max_length=25)
@@ -18,6 +45,7 @@ class Users(models.Model):
         #profile_comment_by_user= list of users who comment on profile posts
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+    objects = UserManager()
 
 class Locations(models.Model):
     city = models.CharField(max_length = 45)
@@ -30,21 +58,26 @@ class Styles(models.Model):
         #studio_with_styles = list of styles linked to a given studio
 
 class Profile(models.Model):
-    username = models.CharField(max_length = 45)
     user = models.ForeignKey(Users, related_name="user", on_delete = models.CASCADE)
     profile_pic = models.ImageField(upload_to='images/', null=True)
-    website = models.CharField(max_length = 200, null = True)
     bio = models.TextField(null= True)
     location = models.ForeignKey(Locations, related_name ="user_location", on_delete = models.CASCADE)
-    books_open = models.BooleanField()
+    availability = models.BooleanField()
+    deposit = models.IntegerField(default=0)
     walk_ins = models.BooleanField()
     is_apprentice = models.BooleanField()
     styles = models.ManyToManyField(Styles, related_name= "artists_with_styles")
     followers = models.ManyToManyField(Users, related_name = "favorite_artists")
         #users who follow artist profile
         #studios_joined = list of studios an artist has worked at. 
+        #contacts= list of contacts linked to a given profile
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+
+class Contacts(models.Model):
+    contact_type = models.CharField(max_length = 45)
+    contact_name = models.CharField(max_length = 200)
+    profile = models.ForeignKey(Profile, related_name= "contacts", on_delete = models.CASCADE)
 
 class ProfilePosts(models.Model):
     profile = models.ForeignKey(Profile, related_name = "profile_post", on_delete = models.CASCADE)

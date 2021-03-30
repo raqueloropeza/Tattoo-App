@@ -20,14 +20,20 @@ def register(request):
     return render(request,"register.html", context)
 
 def createUser(request):
-    role = Roles.objects.get(id= int(request.POST['role']))
-    password = request.POST['password']
-    pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    errors = Users.objects.basic_validator(request.POST)
+    if errors: 
+        for key, value in errors.items():
+                messages.error(request, value)
+        return redirect ('/register')
+    else: 
+        role = Roles.objects.get(id= int(request.POST['role']))
+        password = request.POST['password']
+        pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-    this_user = Users.objects.create(first_name = request.POST['first_name'], last_name = request.POST['last_name'], email= request.POST['email'], password= pw_hash, birth_date = request.POST['birth_date'], role = role)
-    request.session['user_id'] = this_user.id
-    print(this_user.id)
-    return redirect('/register/profile')
+        this_user = Users.objects.create(first_name = request.POST['first_name'], last_name = request.POST['last_name'], email= request.POST['email'], password= pw_hash, birth_date = request.POST['birth_date'], role = role)
+        request.session['user_id'] = this_user.id
+        print(this_user.id)
+        return redirect('/register/profile')
 
 def newProfile(request):
     context = {
