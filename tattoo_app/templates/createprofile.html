@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Profile</title>
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% load mapbox_location_field_tags %}
+    {% location_field_includes %}
+    {% include_jquery %}
+
+</head>
+<body>
+<div class="container">
+    <h1  class="display-3 bg-info text-light">Create Profile</h1>
+    <form method="post">
+        <input type="hidden" name="user" {{user.id}}>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input class="btn btn-primary text-light btn-lg" type="submit" value="submit">
+    </form>
+    {{ form.media }}
+</body>
+</html>

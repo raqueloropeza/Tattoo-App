@@ -44,18 +44,6 @@
                     <h4>Created By:  {{this_trip.uploaded_by.first_name}}</h4>
                 </div>
             </div>
-            <div class="mx-auto row">
-                <h5>People who've joined this trip:</h5>
-            </div>
-            <div class="mx-auto row">
-                <div class= "col-sm-8">
-                    <ul>
-                    {% for users in joined_users %}
-                        <li>{{users.first_name}}</li>
-                    {% endfor %}
-                    </ul>
-                </div>
-            </div>
         </body>
     </div>
 </html>

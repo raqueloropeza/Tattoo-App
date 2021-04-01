@@ -3,10 +3,16 @@
     <head>
         <meta charset = "utf-8">
         <title>Create a Profile</title>
+        {%load static%}
+        {% load bootstrap4 %}
+        {% load mapbox_location_field_tags %}
+        {% location_field_includes %}
+        {% include_jquery %}
         <meta name="viewport" content="width-device-width, initial-scale-1">
-        {% load static %}
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
     </head>
     <div class="container">
         <body>
@@ -28,14 +34,6 @@
                     <div class="jumbotron">
                         <h2> Welcome, {{this_user.first_name}}!</h2>
                         <h2>Create Your Profile</h2>
-                    </div>
-                    <div class="form-group row">
-                        <div class= "col-sm-4">
-                            <label for="username" class= "col-form-label">Username</label>
-                        </div>
-                        <div class= "col-sm-6">
-                            <input class= "form-control" type= "text" name="username" placeholder= "username">
-                        </div>
                     </div>
                     <div class= "form-group row">
                         <div class= "col-sm-4">
@@ -70,6 +68,14 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <div class= "col-sm-4">
+                            <label for="username" class= "col-form-label">Deposit</label>
+                        </div>
+                        <div class= "col-sm-6">
+                            <input class= "form-control" type= "number" name="deposit" placeholder= "deposit">
+                        </div>
+                    </div>
                     <div class= "form-group row">
                         <div class= "col-sm-4">
                             <label for="role" class= "col-form-label">Accepting Walk Ins</label>
@@ -94,12 +100,26 @@
                             </select>
                         </div>
                     </div>
+                    <div class = "form-group row">
+                        <label for="address">Address</label>
+                        <input class= "form-control" type= "address" name="address" placeholder= "address">
+                    </div>
                     <div class= "form-group row">
                         <div class= "d-flex justify-content-center">
                             <input class= "btn btn-primary" type="submit" value="Save and Continue">
                         </div>
                     </div>
                 </form>
+                <div id='map' width="100%" style='height:400px'></div>
+                <script>
+                    mapboxgl.accessToken = { mapbox_access_token }
+                    var map = new mapboxgl.Map({
+                    container: 'map',
+                    style: 'mapbox://styles/mapbox/streets-v10',
+                    center: [-96.7969, 32.7763],
+                    zoom: 9
+                    });
+                </script>
             </div>
         </body>
     </div>

@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.http.response import JsonResponse
+from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .models import *
 import bcrypt
@@ -8,6 +11,7 @@ from time import strftime, strptime
 
 def main(request):
     context = {
+        "all_users":Users.objects.all(),
         "all_profiles": Profile.objects.all(),
         "all_studios": Studios.objects.all(),
     }
@@ -24,7 +28,7 @@ def createUser(request):
     if errors: 
         for key, value in errors.items():
                 messages.error(request, value)
-        return redirect ('/register')
+        return JsonResponse({key:val})
     else: 
         role = Roles.objects.get(id= int(request.POST['role']))
         password = request.POST['password']
@@ -33,19 +37,21 @@ def createUser(request):
         this_user = Users.objects.create(first_name = request.POST['first_name'], last_name = request.POST['last_name'], email= request.POST['email'], password= pw_hash, birth_date = request.POST['birth_date'], role = role)
         request.session['user_id'] = this_user.id
         print(this_user.id)
-        return redirect('/register/profile')
+        return redirect('/add')
 
 def newProfile(request):
+    mapbox_access_token =  "pk.eyJ1Ijoicm9ja3V6YWtpIiwiYSI6ImNrbXdvanBlMzBoMGMybnA1MDQ1MXRxd2EifQ.QYEOIs2oTEInYtbs1u-wBw"
     context = {
         "this_user": Users.objects.get(id=request.session['user_id']),
         "all_locations": Locations.objects.all(),
     }
 
-    return render(request, "profileform.html", context)
+    return render(request, "profileform.html", context, {'mapbox_access_token':mapbox_access_token})
 
 def createProfile(request):
     user = Users.objects.get(id=request.session['user_id'])
     location = Locations.objects.get(id= int(request.POST['location']))
+    
     books_open = False
     if(request.POST['books'] == "open"):
         books_open = True 
@@ -56,8 +62,9 @@ def createProfile(request):
     if(request.POST['apprentice'] == "yes"):
         is_apprentice = True
 
-    this_profile = Profile.objects.create(username = request.POST['username'], user =  user, bio = request.POST['bio'], location = location, books_open= books_open, walk_ins = walk_ins, is_apprentice = is_apprentice)
+    this_profile = Profile.objects.create(user =  user, bio = request.POST['bio'], deposit = request.POST['deposit'], location = location, availability= books_open, walk_ins = walk_ins, is_apprentice = is_apprentice)
     request.session['profile_id'] = this_profile.id
+    print(location.city)
     return redirect("/")
 
 def ProfilePage(request):
@@ -71,6 +78,12 @@ def ProfilePage(request):
         "this_profile": Profile.objects.get(id= profile.id),
     }
     return render(request, "profile.html", context)
+
+class AddProfileView(CreateView):
+    model = Profile
+    template_name = "createprofile.html"
+    success_url = "/"
+    fields = ("user","bio","availability", "walk_ins","is_apprentice","deposit","location", "address" ) 
 
 
 

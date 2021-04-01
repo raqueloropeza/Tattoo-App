@@ -15,6 +15,10 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+if os.name == 'nt':
+    VENV_BASE = os.environ['VIRTUAL_ENV']
+    os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -27,10 +31,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MAPBOX_KEY ="pk.eyJ1Ijoicm9ja3V6YWtpIiwiYSI6ImNrbXdvanBlMzBoMGMybnA1MDQ1MXRxd2EifQ.QYEOIs2oTEInYtbs1u-wBw"
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'corsheaders',
     'tattoo_app',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'location_field.apps.DefaultConfig',
+    'mapbox_location_field',
+    "bootstrap4",
 ]
 
 MIDDLEWARE = [
@@ -49,7 +59,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+# django-cors-headers prevents errors you would normally get due to CORS rules. Whitelisting localhost:3000 to allow our frontend to interact with the API.
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000'
+]
+
+# change to app.example.com in production settings
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Good idea to disable the browseable API in production
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
 
 ROOT_URLCONF = 'tattoo_artist_project.urls'
 

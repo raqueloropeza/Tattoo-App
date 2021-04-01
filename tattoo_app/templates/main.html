@@ -23,6 +23,23 @@
                     <a class="nav-link btn btn-outline-success" href="/register">Join the Collective</a>
                 </nav>
             </div>
+            <div class="row">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>Artist Name</th>
+                        <th>Location</th>
+                        <th>Availability</th>
+                    </tr>
+                    {% for profile in all_profiles %}
+                    <tr>
+                        <td>{{profile.first_name}} {{profile.last_name}}</td>
+                        <td>{{profile.location.city}}</td>
+                        <td>{{profile.availability}}</td>
+                    
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </body>
     </div>
 </html>

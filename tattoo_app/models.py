@@ -1,5 +1,5 @@
 from django.db import models
-from django import forms
+from mapbox_location_field.models import LocationField, AddressAutoHiddenField
 from datetime import date, datetime
 import re
 
@@ -50,6 +50,13 @@ class Users(models.Model):
 class Locations(models.Model):
     city = models.CharField(max_length = 45)
     state = models.CharField(max_length = 2)
+    
+class Map(models.Model):
+    location = LocationField(
+        map_attrs={"style": "mapbox://styles/mightysharky/cjwgnjzr004bu1dnpw8kzxa72", "center": (17.031645, 51.106715)})
+    created_at = models.DateTimeField(auto_now_add=True)
+    address = AddressAutoHiddenField()
+    
 
 class Styles(models.Model):
     style_name = models.CharField(max_length = 45)
@@ -61,7 +68,9 @@ class Profile(models.Model):
     user = models.ForeignKey(Users, related_name="user", on_delete = models.CASCADE)
     profile_pic = models.ImageField(upload_to='images/', null=True)
     bio = models.TextField(null= True)
-    location = models.ForeignKey(Locations, related_name ="user_location", on_delete = models.CASCADE)
+    location = LocationField(
+        map_attrs={"style": "mapbox://styles/mightysharky/cjwgnjzr004bu1dnpw8kzxa72", "center": (-96.7969, 32.7763)})
+    address = AddressAutoHiddenField()
     availability = models.BooleanField()
     deposit = models.IntegerField(default=0)
     walk_ins = models.BooleanField()
