@@ -37,7 +37,7 @@ def createUser(request):
         this_user = Users.objects.create(first_name = request.POST['first_name'], last_name = request.POST['last_name'], email= request.POST['email'], password= pw_hash, birth_date = request.POST['birth_date'], role = role)
         request.session['user_id'] = this_user.id
         print(this_user.id)
-        return redirect('/add')
+        return JsonResponse({"message": "Request Success!"})
 
 def newProfile(request):
     mapbox_access_token =  "pk.eyJ1Ijoicm9ja3V6YWtpIiwiYSI6ImNrbXdvanBlMzBoMGMybnA1MDQ1MXRxd2EifQ.QYEOIs2oTEInYtbs1u-wBw"
@@ -52,9 +52,6 @@ def createProfile(request):
     user = Users.objects.get(id=request.session['user_id'])
     location = Locations.objects.get(id= int(request.POST['location']))
     
-    books_open = False
-    if(request.POST['books'] == "open"):
-        books_open = True 
     walk_ins = False
     if(request.POST['walkins'] == "yes"):
         walk_ins = True
@@ -62,10 +59,9 @@ def createProfile(request):
     if(request.POST['apprentice'] == "yes"):
         is_apprentice = True
 
-    this_profile = Profile.objects.create(user =  user, bio = request.POST['bio'], deposit = request.POST['deposit'], location = location, availability= books_open, walk_ins = walk_ins, is_apprentice = is_apprentice)
+    this_profile = Profile.objects.create(user =  user, bio = request.POST['bio'], deposit = request.POST['deposit'], location = location, availability= request.POST['availability'], walk_ins = walk_ins, is_apprentice = is_apprentice)
     request.session['profile_id'] = this_profile.id
-    print(location.city)
-    return redirect("/")
+    return JsonResponse({"message": "Request Success!"})
 
 def ProfilePage(request):
     user = Users.objects.get(id= request.session['user_id'])
@@ -83,7 +79,7 @@ class AddProfileView(CreateView):
     model = Profile
     template_name = "createprofile.html"
     success_url = "/"
-    fields = ("user","bio","availability", "walk_ins","is_apprentice","deposit","location", "address" ) 
+    fields = ("user","availability", "walk_ins","is_apprentice","deposit","location", "address" ) 
 
 
 

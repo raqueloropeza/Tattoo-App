@@ -66,12 +66,11 @@ class Styles(models.Model):
 
 class Profile(models.Model):
     user = models.ForeignKey(Users, related_name="user", on_delete = models.CASCADE)
-    profile_pic = models.ImageField(upload_to='images/', null=True)
-    bio = models.TextField(null= True)
+    profile_pic = models.CharField(max_length= 255, null=True)
     location = LocationField(
         map_attrs={"style": "mapbox://styles/mightysharky/cjwgnjzr004bu1dnpw8kzxa72", "center": (-96.7969, 32.7763)})
     address = AddressAutoHiddenField()
-    availability = models.BooleanField()
+    availability = models.CharField(max_length=50)
     deposit = models.IntegerField(default=0)
     walk_ins = models.BooleanField()
     is_apprentice = models.BooleanField()
